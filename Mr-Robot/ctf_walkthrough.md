@@ -32,3 +32,59 @@ As it is a web server lets open robots.txt,
 Download the Key 1 file to get the flag
 
 ![alt text](screenshots/flag_1.png)
+
+We also got a fsocity.dic, I come to know from its extension that it is a dictionary file, now lets check its content,I sorted and filtered unique values from file and got around 11k words
+
+![](screenshots/sort.png)
+
+### Let's Scan the website for login page to get adminstrative rights for website
+
+Here I am using nikto to scan the web server
+
+`nikto -h hacknest.net `
+
+#### Here's the result of the Nikto and we got that website is running on wordpress and also the login URL..
+
+![nikto output](screenshots/login_scan.png)
+
+
+![wordpress Login Page](screenshots/login_page.png)
+
+
+# Phase 3: Exploitation
+The great thing about this WordPress version is that you can enumerate usernames of users on the WordPress installation. How? Basically as follows:
+
+If you write some random gibberish in the login form, you will get the following error:
+
+> ERROR: Invalid username. Lost your password?
+
+If, however, you get a valid username, you’ll get a different error:
+
+> ERROR: The password you entered for the username pablo is incorrect. Lost your password?
+
+Knowing this, we can try a bunch of usernames and check if there is any difference in the error messages. We have our wordlist from before, so it would be my first guess to try that one.
+
+The tool we’re going to be using is hydra. The best tool for bruteforcing anything. But before we go ahead and launch it, we need to check what the requests to log into a WordPress site looks like.
+
+In order to capture that request, I’m going to use Burp Suite as a proxy in between my browser and the target.
+
+![burp request](screenshots/burp.png)
+
+We see 3 important parameters:
+
+-   **log**  — The username
+-   **pwd**  — The password
+-   **wp-submit**  — The “thing” we’re submitting (log in)
+
+
+Let’s throw this into hydra:
+
+> hydra -L fsocity_filtered.dic -p something 192.168.1.56 http-post-form ‘/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In:F=Invalid username’
+
+
+-   -L fsocity_filtered.dic — Here we will bruteforce the login using our wordlist we found earlier
+-   -p — Here we supply a password, at this stage, we only want the username, so it doesn’t matter what we fill in here
+-   192.168.1.56 — Our target
+-   http-post-form — The method we’re bruteforcing, in this case, a POST request
+
+![hydra_username](screenshots/username.png)
