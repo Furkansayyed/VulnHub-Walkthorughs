@@ -164,3 +164,5 @@ Looking at the contents of that raw-md5 file, we can indeed see an MD5 hash for 
 python -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
+## Finally we logged in as robot the got the flag 2 🎉🎉
+![key 2](screenshots/key_2.png)
