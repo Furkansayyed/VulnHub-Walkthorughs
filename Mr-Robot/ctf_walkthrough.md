@@ -166,3 +166,31 @@ python -c 'import pty; pty.spawn("/bin/bash")'
 
 ## Finally we logged in as robot the got the flag 2 🎉🎉
 ![key 2](screenshots/key_2.png)
+
+### This user, however, doesn’t seem to be root yet. But let’s check if we can escalate more. We’ll be using the following command to check for binaries with the SUID bit set:
+
+```bash
+find / -perm -4000 -type f 2>/dev/null
+```
+
+With this command, we can check for binaries that can run commands as it’s owner. In our case, we found the following files:
+
+![permission](screenshots/perm.png)
+
+### We get to see that nmap is their so we can use its interactive mode on root permissions
+
+```bash
+nmap --interactive
+```
+
+Using an exclamation mark, we can run a command as the owner of nmap (root), which would give us root privileges.So i run **!sh** and 
+
+Bamm !!! we got root shell
+
+![alt text](image-4.png)
+
+## Finally we got all 3 keys 🔑🔑🔑🎉✨
+
+### So now we have hacked the Mr Robot VM, from discovering a WordPress installation to hacking it, uploading a malicious plugin, and escalating privileges through nmap to get the root permission.
+
+#### Big thanks to Pablo Brusseel for [article](https://medium.com/@hackermentor/vulnhub-mr-robot-walkthrough-9309702b8e8)
