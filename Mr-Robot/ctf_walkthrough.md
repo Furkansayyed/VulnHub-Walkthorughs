@@ -41,7 +41,9 @@ We also got a fsocity.dic, I come to know from its extension that it is a dictio
 
 Here I am using nikto to scan the web server
 
-`nikto -h hacknest.net `
+```bash
+nikto -h hacknest.net 
+```
 
 #### Here's the result of the Nikto and we got that website is running on wordpress and also the login URL..
 
