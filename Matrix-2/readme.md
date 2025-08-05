@@ -135,3 +135,12 @@ Now lets try using this to exploit the target machine
 
 I got the three files and now I have given execute permission to all of them and now lets execute them
 
+![compile file exploit](screenshots/compile.png)
+
+![root image](screenshots/root.png)
+
+## Finally got the root shell access 🎉🎉
+
+![final flag](screenshots/flag2.png)
+
+### 🚩Here I got the final Flag…. 🚩
