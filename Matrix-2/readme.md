@@ -127,3 +127,11 @@ Now I have make that session to run in background, and now I will use search sug
 
 ![explot scan](screenshots/exploitScan.png)
 
+So the target machine is vulneable to exploit/linux/local/cve_2022_0847_dirtypipe
+
+Now I search for it and got the following https://github.com/AlexisAhmed/CVE-2022-0847-DirtyPipe-Exploits
+
+Now lets try using this to exploit the target machine
+
+I got the three files and now I have given execute permission to all of them and now lets execute them
+
