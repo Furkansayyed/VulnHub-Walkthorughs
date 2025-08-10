@@ -64,3 +64,66 @@ Finished
 
 ```
 Lets Enumurate each endpoint we got in result
+
+On / soource code, I got the following hint:
+hint:  
+
+"Please, jubiscleudo, don't forget to activate the port knocking when exiting your section, and tell the boss not to forget to approve the .jpg file - dev_suport@hackable3.com" -->
+
+Here **jubiscleudo** can be a username which we can use further
+
+On http://192.168.100.7/css/2.txt I got 2.txt which has following content:
+    -> ++++++++++[>+>+++>+++++++>++++++++++<<<<-]>>>------------------....
+Now this is a brainfuck encoded string, so i used [decoder](https://www.dcode.fr/brainfuck-language) to decoded the string and got the following: **4444**
+
+
+/js only has a javascript file without any interesting code
+
+/config -> http://192.168.100.7/config/1.txt I got 1.txt file and it has a base64 encoded string, **MTAwMDA=** after decoding -> **10000**
+
+/backup
+![wordlist](screenshots/wordlist.png)
+Here I got the wordlist.txt which we can use for bruteforce attack, I has around 300 words.
+
+/imagens -> Nothing Interesting, just images
+/login_page:
+![login_page](screenshots/login.png)
+
+I got the login page and when I try the random crrdentials it takes to a php page that is login.php and I got the following source code:
+
+```php
+<?php
+include('config.php');
+$usuario = $_POST['user'];
+$senha = $_POST['pass'];
+
+$query = " SELECT * FROM usuarios WHERE user = '{$usuario}' and pass = '{$senha}'";  
+
+$result = mysqli_query($conexao, $query);
+
+$row = mysqli_num_rows($result);
+
+#validaÃ§Ã£o conta
+if($row == 1) {
+	$_SESSION['usuario'] = $usuario;
+	header('Location: 3.jpg');
+	exit();
+} else {
+	$_SESSION['nao_autenticado'] = true;
+	header('Location: login_page/login.html');
+	exit();
+}
+?>
+
+```
+
+Something sql related query is their, but I got a hint in this code, that is `header('Location: 3.jpg')`, I got confused why it is a image used in header, but its a hint
+
+So lets try to get, the image
+![steg image](screenshots/image.png)
+
+Here we got our image, now I will use [Steghide tool](https://www.kali.org/tools/steghide/) to get the hidden data inside the image
+
+![hidden image data](screenshots/steg.png)
+So it says porta:65535 which means it is a port number and other number which we got earlier are also some ports.
+
