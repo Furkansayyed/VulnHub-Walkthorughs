@@ -127,3 +127,29 @@ Here we got our image, now I will use [Steghide tool](https://www.kali.org/tools
 ![hidden image data](screenshots/steg.png)
 So it says porta:65535 which means it is a port number and other number which we got earlier are also some ports.
 
+So after searching, I got to know about the port knocking service wherein we have to knock a sequence of port to set the port open
+
+I used this command:
+```bash
+knock 192.168.100.7 10000 4444 65535
+```
+
+![ssh port opens](screenshots/nmap_2.png)
+
+So here ssh port is now open, we can use hydra for bruteforce attack and wordlist we got in /backups/
+
+```bash
+hydra -l jubiscleudo -P wordlist.txt ssh://192.168.100.7
+```
+
+![ssh cracked](screenshots/brute.png)
+
+### Now lets login with the credentials to ssh
+
+![Flag 1](screenshots/flag_1.png)
+
+### User Flag one is here...
+
+Lets Enumerate more and see for root privilege, but this user jubiscleudo does not have sudo privilege, so I checked in /home and got one more user hackable_3
+
+
