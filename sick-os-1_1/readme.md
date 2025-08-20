@@ -93,3 +93,6 @@ I got the config.php and we have a database connection along with password lets 
 ### We got the user sicoks access on the target machine
 ![sicos login](screenshots/access.png)
 
+### User `sicoks` is under sudo user so I used is used `sudo su` command and got the root access and here is the flag:
+
+![flag](screenshots/flag.png)
