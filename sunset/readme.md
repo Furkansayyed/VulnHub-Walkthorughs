@@ -55,4 +55,19 @@ It seems to be username:password pair with hashed password.
 
 Here we got the password for the user sunset
 
+## Enumeration and Privilege Escalation
 
+As port 22 that is ssh port is open on target machine, I will use it and login as sunset user
+
+![ssh connection estabished](screenshots/ssh.png)
+But, this user does have permission to access root directory. 
+
+I used `sudo -l` command to get the commands that are run as root on behalf of user and got the following 
+
+![Privilege Escalation](screenshots/exploit.png)
+
+Here I got ed command that a user can execute and I search for it on [GTFOBins](https://gtfobins.github.io/gtfobins/ed/) and got the exploitation steps
+
+![flag](screenshots/flag.png)
+
+## Here, I got the flag🚩 of the root level and sunset:1 boot to root is Solved 👓👓
