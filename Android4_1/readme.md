@@ -75,3 +75,8 @@ Here I got the root shell now lets get the flag
 
 ### I got the flag 🚩🚩
 
+But the device has lockscreen pin, so we have to bypass that for getting the control of device, for this as I am having root access to this device, I will find the `password.key` file and then just remove it 
+
+The path of the `password.key` is `/data/system/password.key`
+
+![password bypass](screenshots/unlocked.png)
